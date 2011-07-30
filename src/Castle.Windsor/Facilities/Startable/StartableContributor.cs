@@ -39,6 +39,7 @@ namespace Castle.Facilities.Startable
 			}
 
 			var startable = model.Configuration.Attributes["startable"];
+			
 			if (startable != null)
 			{
 				return converter.PerformConversion<bool>(startable);
