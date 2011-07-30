@@ -64,7 +64,8 @@ namespace Castle.Facilities.Startable
 
 		private void AddStop(ComponentModel model)
 		{
-			var stopMethod = model.Configuration.Attributes["stopMethod"];
+			var stopMethod = TryGetAttribute(model, "stopMethod");
+				
 			if (stopMethod != null)
 			{
 				var method = model.Implementation.GetMethod(stopMethod, Type.EmptyTypes);
@@ -77,16 +78,24 @@ namespace Castle.Facilities.Startable
 				}
 				model.ExtendedProperties.Add("Castle.StartableFacility.StopMethod", method);
 			}
+			
 			model.Lifecycle.AddFirst(StopConcern.Instance);
+		}
+
+		string TryGetAttribute(ComponentModel model, string attribute)
+		{
+			if (model.Configuration == null) return null;
+			return model.Configuration.Attributes[attribute];
 		}
 
 		private void AddStart(ComponentModel model)
 		{
-			var startMethod = model.Configuration.Attributes["startMethod"];
+			var startMethod = TryGetAttribute(model, "startMethod");
+
 			if (startMethod != null)
 			{
 				var method = model.Implementation.GetMethod(startMethod, Type.EmptyTypes);
-				if(method == null)
+				if (method == null)
 				{
 					throw new ArgumentException(
 						string.Format(
@@ -95,6 +104,7 @@ namespace Castle.Facilities.Startable
 				}
 				model.ExtendedProperties.Add("Castle.StartableFacility.StartMethod", method);
 			}
+			
 			model.Lifecycle.Add(StartConcern.Instance);
 		}
 
